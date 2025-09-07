@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolve Energia Solar 2.0 - Calculadora Offline</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Omnes:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Omnes', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F5CC00 0%, #e6bc00 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #000000;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #454545 100%);
+            color: #F5CC00;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #FFFFFF;
+        }
+        
+        .download-link {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(245, 204, 0, 0.2);
+            color: #F5CC00;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 2px solid #F5CC00;
+        }
+        
+        .download-link:hover {
+            background: rgba(245, 204, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .left-panel, .right-panel {
+            padding: 30px;
+        }
+        
+        .left-panel {
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section h3 {
+            color: #000000;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #F5CC00;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #000000;
+            font-size: 15px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #F5CC00;
+            box-shadow: 0 0 0 4px rgba(245, 204, 0, 0.15);
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .toggle-btn.active {
+            background: #F5CC00;
+            color: #000000;
+            border-color: #F5CC00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(245, 204, 0, 0.35);
+        }
+        
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .equipment-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .equipment-item:hover {
+            border-color: #F5CC00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .equipment-item.selected {
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(245, 204, 0, 0.3);
+        }
+        
+        .equipment-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.3);
+        }
+        
+        .equipment-info {
+            flex: 1;
+        }
+        
+        .equipment-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #000000;
+        }
+        
+        .equipment-consumption {
+            font-size: 12px;
+            color: #454545;
+            margin-top: 4px;
+        }
+        
+        .results-section {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        
+        .result-card {
+            text-align: center;
+            padding: 25px 20px;
+            border-radius: 14px;
+            background: white;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+            transition: transform 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        }
+        
+        .result-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000000;
+            font-family: 'Omnes', sans-serif;
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: #454545;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .blue { 
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        .blue .result-value { color: #000000; }
+        
+        .green { 
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        .green .result-value { color: #000000; }
+        
+        .purple { 
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        .purple .result-value { color: #000000; }
+        
+        .orange { 
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        .orange .result-value { color: #000000; }
+        
+        .yellow { 
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        .yellow .result-value { color: #000000; }
+        
+        .proposal {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #000000 0%, #454545 100%);
+            color: #F5CC00;
+            margin-top: 35px;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+        
+        .proposal h3 {
+            border-bottom-color: rgba(245, 204, 0, 0.3);
+            color: #F5CC00;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+        }
+        
+        .financial-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-top: 25px;
+        }
+        
+        .financial-item {
+            text-align: center;
+            padding: 25px;
+            background: rgba(245, 204, 0, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .financial-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .financial-value {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+        
+        .financial-label {
+            font-size: 13px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #F5CC00;
+        }
+        
+        .specs {
+            background: rgba(245, 204, 0, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #454545;
+            margin-top: 10px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .conversion-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #454545;
+            border-left: 4px solid #F5CC00;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 18px;
+            margin: 30px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .print-btn {
+            background: #000000;
+            color: #F5CC00;
+        }
+        
+        .print-btn:hover {
+            background: #454545;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .save-btn {
+            background: #F5CC00;
+            color: #000000;
+        }
+        
+        .save-btn:hover {
+            background: #e6bc00;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 204, 0, 0.4);
+        }
+        
+        .share-btn {
+            background: #454545;
+            color: #FFFFFF;
+        }
+        
+        .share-btn:hover {
+            background: #000000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .cost-benefit {
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .cost-benefit h3 {
+            color: #000000;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #F5CC00;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .benefit-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(245, 204, 0, 0.2);
+            border-radius: 10px;
+            border: 2px solid #F5CC00;
+        }
+        
+        .benefit-value {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000000;
+        }
+        
+        .benefit-label {
+            font-size: 12px;
+            color: #454545;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .benefit-summary {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .benefit-summary h4 {
+            color: #000000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: #454545;
+        }
+        
+        .summary-value {
+            font-weight: bold;
+            color: #000000;
+        }
+        
+        .optional-services {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .optional-services h4 {
+            color: #000000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .optional-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .optional-item:hover {
+            border-color: #F5CC00;
+        }
+        
+        .optional-item.selected {
+            background: linear-gradient(135deg, #fffce5 0%, #fff8cc 100%);
+            border-color: #F5CC00;
+        }
+        
+        .optional-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.3);
+        }
+        
+        .optional-info {
+            flex: 1;
+        }
+        
+        .optional-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #000000;
+        }
+        
+        .optional-price {
+            font-size: 12px;
+            color: #454545;
+            margin-top: 2px;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .fio-b-section {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .fio-b-section h4 {
+            color: #000000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .financial-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefit-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .download-link {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 20px;
+                justify-content: center;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white !important;
+            }
+            
+            .action-buttons, .download-link {
+                display: none;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-panel {
+                border-right: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-solar-panel"></i> Resolve Energia Solar 2.0</h1>
+            <p>Calculadora Profissional de Energia Solar | Painéis 610W | Tarifa R$ 1,22/kWh</p>
+            <a href="resolve-energia-solar-calculadora.html" download class="download-link">
+                <i class="fas fa-download"></i> Baixar Calculadora
+            </a>
+        </div>
+
+        <div class="main-content">
+            <!-- Painel Esquerdo -->
+            <div class="left-panel">
+                
+                <!-- Dados do Cliente -->
+                <div class="section">
+                    <h3><i class="fas fa-user"></i> Dados do Cliente</h3>
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="clientName" placeholder="Ex: João Silva" onchange="updateProposal()">
+                        <div class="error-message" id="nameError">Por favor, informe um nome válido</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Telefone</label>
+                        <input type="tel" id="clientPhone" placeholder="(11) 99999-9999" onchange="updateProposal()">
+                        <div class="error-message" id="phoneError">Por favor, informe um telefone válido</div>
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail</label>
+                        <input type="email" id="clientEmail" placeholder="joao@email.com" onchange="updateProposal()">
+                        <div class="error-message" id="emailError">Por favor, informe um e-mail válido</div>
+                    </div>
+                    <div class="input-group">
+                        <label>Cidade</label>
+                        <input type="text" id="clientCity" placeholder="São Paulo - SP" onchange="updateProposal()">
+                        <div class="error-message" id="cityError">Por favor, informe uma cidade válida</div>
+                    </div>
+                </div>
+
+                <!-- Consumo Atual -->
+                <div class="section">
+                    <h3><i class="fas fa-chart-bar"></i> Consumo Atual</h3>
+                    
+                    <div class="toggle-group">
+                        <div class="toggle-btn active" id="kwhToggle" onclick="toggleConsumptionType('kwh')">kWh/mês</div>
+                        <div class="toggle-btn" id="valueToggle" onclick="toggleConsumptionType('value')">Valor R$</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label id="consumptionLabel">Consumo Mensal (kWh)</label>
+                        <input type="text" id="currentConsumption" placeholder="1000" oninput="formatConsumptionInput(); calculateAll()">
+                        <div class="error-message" id="consumptionError">Por favor, informe um valor válido</div>
+                        <div id="conversionDisplay" class="conversion-display" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Irradiação Solar Local (kWh/m².dia)</label>
+                        <input type="range" id="irradiation" min="3.5" max="6.5" step="0.1" value="4.69" oninput="updateIrradiation(); calculateAll()">
+                        <div class="help-text">
+                            <span id="irradiationValue">4.69</span> kWh/m².dia | 
+                            Sul: 3.5-4.5 | SE: 4.0-5.0 | CO: 4.5-5.5 | NE: 5.0-6.5
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipamentos -->
+                <div class="section">
+                    <h3><i class="fas fa-cogs"></i> Equipamentos Futuros</h3>
+                    
+                    <div class="equipment-grid">
+                        <!-- Ar Condicionados -->
+                        <div class="equipment-item" onclick="toggleEquipment('ac9000', 150, this)">
+                            <input type="checkbox" id="ac9000">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-snowflake"></i> AC 9.000 BTU</div>
+                                <div class="equipment-consumption">150 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('ac12000', 180, this)">
+                            <input type="checkbox" id="ac12000">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-snowflake"></i> AC 12.000 BTU</div>
+                                <div class="equipment-consumption">180 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('ac18000', 300, this)">
+                            <input type="checkbox" id="ac18000">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-snowflake"></i> AC 18.000 BTU</div>
+                                <div class="equipment-consumption">300 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('ac24000', 400, this)">
+                            <input type="checkbox" id="ac24000">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-snowflake"></i> AC 24.000 BTU</div>
+                                <div class="equipment-consumption">400 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('ac30000', 450, this)">
+                            <input type="checkbox" id="ac30000">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-snowflake"></i> AC 30.000 BTU</div>
+                                <div class="equipment-consumption">450 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Outros Equipamentos -->
+                        <div class="equipment-item" onclick="toggleEquipment('chuveiro', 108, this)">
+                            <input type="checkbox" id="chuveiro">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-shower"></i> Chuveiro 5.400W</div>
+                                <div class="equipment-consumption">108 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('piscina', 150, this)">
+                            <input type="checkbox" id="piscina">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-swimming-pool"></i> Bomba Piscina</div>
+                                <div class="equipment-consumption">150 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('veiculo', 350, this)">
+                            <input type="checkbox" id="veiculo">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-car"></i> Veículo Elétrico</div>
+                                <div class="equipment-consumption">350 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('iluminacao', 25, this)">
+                            <input type="checkbox" id="iluminacao">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-lightbulb"></i> Iluminação LED</div>
+                                <div class="equipment-consumption">25 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('airfryer', 23, this)">
+                            <input type="checkbox" id="airfryer">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-utensils"></i> Air Fryer</div>
+                                <div class="equipment-consumption">23 kWh/mês</div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-item" onclick="toggleEquipment('bomba', 45, this)">
+                            <input type="checkbox" id="bomba">
+                            <div class="equipment-info">
+                                <div class="equipment-name"><i class="fas fa-tint"></i> Bomba d'Água</div>
+                                <div class="equipment-consumption">45 kWh/mês</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-text">
+                        <i class="fas fa-lightbulb"></i> Painéis utilizados: 610W cada - Alta eficiência monocristalino<br>
+                        <i class="fas fa-map-marker-alt"></i> Cálculos baseados na irradiação solar específica do Pará (4,69 kWh/m².dia)<br>
+                        <i class="fas fa-money-bill-wave"></i> Preço à vista: R$ 3.200/kWp
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Direito -->
+            <div class="right-panel">
+                <div class="results-section">
+                    
+                    <!-- Dimensionamento -->
+                    <div class="section">
+                        <h3><i class="fas fa-chart-line"></i> Dimensionamento do Sistema</h3>
+                        
+                        <div class="results-grid">
+                            <div class="result-card blue">
+                                <div class="result-value" id="totalKwh">0</div>
+                                <div class="result-label">kWh/mês Total</div>
+                            </div>
+                            
+                            <div class="result-card green">
+                                <div class="result-value" id="requiredPanels">0</div>
+                                <div class="result-label">Painéis 610W</div>
+                            </div>
+                            
+                            <div class="result-card purple">
+                                <div class="result-value" id="systemPower">0</div>
+                                <div class="result-label">kWp Sistema</div>
+                            </div>
+                            
+                            <div class="result-card yellow">
+                                <div class="result-value" id="inverterPower">1</div>
+                                <div class="result-label">Nº de Inversores</div>
+                            </div>
+                            
+                            <div class="result-card orange">
+                                <div class="result-value" id="investment">R$ 0,00</div>
+                                <div class="result-label">Investimento</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Análise Financeira -->
+                    <div class="section">
+                        <h3><i class="fas fa-money-bill-wave"></i> Análise Financeira</h3>
+                        
+                        <div class="results-grid">
+                            <div class="result-card green">
+                                <div class="result-value" id="monthlySavings">R$ 0,00</div>
+                                <div class="result-label">Economia/Mês (85%)</div>
+                            </div>
+                            
+                            <div class="result-card blue">
+                                <div class="result-value" id="payback">0</div>
+                                <div class="result-label">Payback (anos)</div>
+                            </div>
+                            
+                            <div class="result-card purple">
+                                <div class="result-value" id="savings25years">R$ 0,00</div>
+                                <div class="result-label">Economia 25 Anos</div>
+                            </div>
+                            
+                            <div class="result-card orange">
+                                <div class="result-value" id="roi">0%</div>
+                                <div class="result-label">ROI Anual</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opções de Pagamento -->
+                    <div class="section">
+                        <h3><i class="fas fa-credit-card"></i> Opção de Pagamento</h3>
+                        
+                        <div style="display: grid; gap: 15px;">
+                            <div class="result-card green" style="padding: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="font-weight: bold; color: #000000;"><i class="fas fa-money-bill-wave"></i> À Vista</div>
+                                        <div style="font-size: 12px; color: #454545;">Preço especial</div>
+                                    </div>
+                                    <div class="result-value" id="priceAVista" style="color: #000000; font-size: 22px;">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Serviços Opcionais -->
+                    <div class="optional-services">
+                        <h4><i class="fas fa-plus-circle"></i> Serviços Opcionais</h4>
+                        
+                        <div class="optional-item" onclick="toggleOptional('manutencao', this)">
+                            <input type="checkbox" id="manutencao">
+                            <div class="optional-info">
+                                <div class="optional-name">Manutenção Preventiva</div>
+                                <div class="optional-price">+1% no valor do investimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="optional-item" onclick="toggleOptional('garantia', this)">
+                            <input type="checkbox" id="garantia">
+                            <div class="optional-info">
+                                <div class="optional-name">6 Meses de Garantia Extra</div>
+                                <div class="optional-price">+1% no valor do investimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="optional-item" onclick="toggleOptional('aplicativo', this)">
+                            <input type="checkbox" id="aplicativo">
+                            <div class="optional-info">
+                                <div class="optional-name">1 Ano de Aplicativo Premium</div>
+                                <div class="optional-price">+1% no valor do investimento</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Análise de Custo-Benefício -->
+                    <div class="cost-benefit">
+                        <h3><i class="fas fa-chart-line"></i> Projeção de Economia por ano</h3>
+                        
+                        <div class="benefit-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-value" id="economyMonth1">R$ 0,00</div>
+                                <div class="benefit-label">1 Mês</div>
+                            </div>
+                            
+                            <div class="benefit-item">
+                                <div class="benefit-value" id="economyYear1">R$ 0,00</div>
+                                <div class="benefit-label">12 Meses</div>
+                            </div>
+                            
+                            <div class="benefit-item">
+                                <div class="benefit-value" id="economyYear5">R$ 0,00</div>
+                                <div class="benefit-label">60 Meses</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Nova seção para Fio B -->
+                        <div class="fio-b-section">
+                            <h4><i class="fas fa-bolt"></i> Custo Fio B (15%)</h4>
+                            <div class="benefit-grid">
+                                <div class="benefit-item">
+                                    <div class="benefit-value" id="fioBMonth1">R$ 0,00</div>
+                                    <div class="benefit-label">1 Mês</div>
+                                </div>
+                                
+                                <div class="benefit-item">
+                                    <div class="benefit-value" id="fioBYear1">R$ 0,00</div>
+                                    <div class="benefit-label">12 Meses</div>
+                                </div>
+                                
+                                <div class="benefit-item">
+                                    <div class="benefit-value" id="fioBYear5">R$ 0,00</div>
+                                    <div class="benefit-label">60 Meses</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-summary">
+                            <h4>Resumo da Projeção</h4>
+                            <div class="summary-item">
+                                <span class="summary-label">Economia no 1º mês:</span>
+                                <span class="summary-value" id="summaryMonth1">R$ 0,00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Economia em 12 meses:</span>
+                                <span class="summary-value" id="summaryYear1">R$ 0,00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Economia em 60 meses:</span>
+                                <span class="summary-value" id="summaryYear5">R$ 0,00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Custo Fio B em 60 meses:</span>
+                                <span class="summary-value" id="summaryFioBYear5">R$ 0,00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Payback estimado:</span>
+                                <span class="summary-value" id="summaryPayback">0 anos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proposta Final -->
+        <div class="proposal" id="proposalSection">
+            <h3><i class="fas fa-file-alt"></i> Proposta Técnica Comercial</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 35px; margin-bottom: 25px;">
+                <div>
+                    <h4 style="margin-bottom: 12px;"><i class="fas fa-user"></i> Cliente</h4>
+                    <p><strong>Nome:</strong> <span id="propClientName">-</span></p>
+                    <p><strong>Telefone:</strong> <span id="propClientPhone">-</span></p>
+                    <p><strong>Email:</strong> <span id="propClientEmail">-</span></p>
+                    <p><strong>Cidade:</strong> <span id="propClientCity">-</span></p>
+                    <p><strong>Data:</strong> <span id="propDate"></span></p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 12px;"><i class="fas fa-chart-bar"></i> Consumo</h4>
+                    <p><strong>Atual:</strong> <span id="propCurrentConsumption">0</span> kWh/mês</p>
+                    <p><strong>Equipamentos:</strong> <span id="propEquipmentConsumption">0</span> kWh/mês</p>
+                    <p><strong>Total:</strong> <span id="propTotalConsumption">0</span> kWh/mês</p>
+                </div>
+            </div>
+            
+            <div class="specs">
+                <h4 style="margin-bottom: 18px;"><i class="fas fa-cogs"></i> Especificações Técnicas</h4>
+                <div class="specs-grid">
+                    <div>
+                        <strong>Painéis Solares:</strong><br>
+                        • <span id="specPanels">0</span> Painéis 610W Monocristalino<br>
+                        • Potência Total: <span id="specPower">0</span> kWp<br>
+                        • Tecnologia: PERC Half-Cell<br>
+                        • Garantia: 25 anos
+                    </div>
+                    <div>
+                        <strong>Inversor:</strong><br>
+                        • Quantidade: <span id="specInverter">1</span> unidade<br>
+                        • Tipo: String (Grid-Tie)<br>
+                        • Eficiência: >97%<br>
+                        • Garantia: 10 anos
+                    </div>
+                </div>
+            </div>
+            
+            <div class="financial-grid">
+                <div class="financial-item">
+                    <div class="financial-value" id="finalInvestment">R$ 0,00</div>
+                    <div class="financial-label">Investimento Total</div>
+                </div>
+                <div class="financial-item">
+                    <div class="financial-value" id="finalMonthlySavings">R$ 0,00</div>
+                    <div class="financial-label">Economia Mensal (85%)</div>
+                </div>
+                <div class="financial-item">
+                    <div class="financial-value" id="finalPayback">0 anos</div>
+                    <div class="financial-label">Payback</div>
+                </div>
+                <div class="financial-item">
+                    <div class="financial-value" id="finalROI">R$ 0,00</div>
+                    <div class="financial-label">Economia 25 Anos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="action-buttons">
+            <button class="action-btn print-btn" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir Proposta
+            </button>
+            <button class="action-btn save-btn" onclick="saveProposal()">
+                <i class="fas fa-save"></i> Salvar Proposta
+            </button>
+            <button class="action-btn share-btn" onclick="shareProposal()">
+                <i class="fas fa-share-alt"></i> Compartilhar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let consumptionType = 'kwh';
+        let selectedEquipments = {};
+        let selectedOptionals = {};
+        const TARIFF = 1.22; // R$/kWh
+        const PANEL_POWER = 0.61; // kW (610W)
+        const PRICE_PER_KWP = 3200; // R$/kWp
+
+        // Inicializar data
+        document.getElementById('propDate').textContent = new Date().toLocaleDateString('pt-BR');
+
+        // Função para formatar valores monetários
+        function formatMoney(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        // Função para formatar números com separadores
+        function formatNumber(value) {
+            return new Intl.NumberFormat('pt-BR').format(value);
+        }
+
+        // Função para validar e formatar entrada do consumo
+        function formatConsumptionInput() {
+            const input = document.getElementById('currentConsumption');
+            const errorElement = document.getElementById('consumptionError');
+            let value = input.value.replace(/[^\d,]/g, '');
+            
+            // Validar se é um número válido
+            if (value && isNaN(parseFloat(value.replace(',', '.')))) {
+                errorElement.style.display = 'block';
+                return false;
+            }
+            
+            errorElement.style.display = 'none';
+            input.value = value;
+            return true;
+        }
+
+        // Alternar entre tipo de consumo (kWh ou R$)
+        function toggleConsumptionType(type) {
+            consumptionType = type;
+            
+            // Atualizar botões
+            document.getElementById('kwhToggle').classList.toggle('active', type === 'kwh');
+            document.getElementById('valueToggle').classList.toggle('active', type === 'value');
+            
+            // Atualizar label e placeholder
+            const label = document.getElementById('consumptionLabel');
+            const input = document.getElementById('currentConsumption');
+            const conversion = document.getElementById('conversionDisplay');
+            
+            if (type === 'kwh') {
+                label.textContent = 'Consumo Mensal (kWh)';
+                input.placeholder = '1000';
+                conversion.style.display = 'none';
+            } else {
+                label.textContent = 'Valor da Conta (R$)';
+                input.placeholder = '1.220,00';
+                conversion.style.display = 'block';
+            }
+            
+            // Limpar valor
+            input.value = '';
+            calculateAll();
+        }
+
+        // Atualizar exibição do valor de irradiação
+        function updateIrradiation() {
+            const value = document.getElementById('irradiation').value;
+            document.getElementById('irradiationValue').textContent = value;
+        }
+
+        // Alternar seleção de equipamentos
+        function toggleEquipment(id, consumption, element) {
+            const checkbox = document.getElementById(id);
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                selectedEquipments[id] = consumption;
+                element.classList.add('selected');
+            } else {
+                delete selectedEquipments[id];
+                element.classList.remove('selected');
+            }
+            
+            calculateAll();
+        }
+
+        // Alternar seleção de serviços opcionais
+        function toggleOptional(id, element) {
+            const checkbox = document.getElementById(id);
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                selectedOptionals[id] = true;
+                element.classList.add('selected');
+            } else {
+                delete selectedOptionals[id];
+                element.classList.remove('selected');
+            }
+            
+            calculateAll();
+        }
+
+        // Calcular todos os valores
+        function calculateAll() {
+            if (!formatConsumptionInput()) return;
+            
+            const currentConsumptionInput = document.getElementById('currentConsumption').value;
+            const irradiation = parseFloat(document.getElementById('irradiation').value);
+            
+            // Calcular consumo atual
+            let currentConsumptionKwh = 0;
+            if (currentConsumptionInput) {
+                if (consumptionType === 'kwh') {
+                    // Converter formato brasileiro para número
+                    currentConsumptionKwh = parseFloat(currentConsumptionInput.replace('.', '').replace(',', '.'));
+                    document.getElementById('conversionDisplay').innerHTML = 
+                        `💡 <strong>≈ ${formatMoney(currentConsumptionKwh * TARIFF)}/mês</strong>`;
+                } else {
+                    // Remover pontos e converter vírgula para ponto
+                    const cleanValue = parseFloat(currentConsumptionInput.replace(/\./g, '').replace(',', '.'));
+                    currentConsumptionKwh = Math.round(cleanValue / TARIFF);
+                    document.getElementById('conversionDisplay').innerHTML = 
+                        `💡 <strong>≈ ${formatNumber(currentConsumptionKwh)} kWh/mês</strong> (R$ ${TARIFF.toFixed(2)}/kWh)`;
+                }
+            }
+            
+            // Calcular equipamentos selecionados
+            const selectedKwh = Object.values(selectedEquipments).reduce((sum, kwh) => sum + kwh, 0);
+            
+            // Cálculos principais
+            const totalKwh = currentConsumptionKwh + selectedKwh;
+            
+            // Calcular kWp necessário (baseado na relação 1000kWh = 15 painéis)
+            const systemPower = totalKwh > 0 ? (totalKwh * 8.8) / 1000 : 0;
+            
+            // Calcular número de painéis (baseado na relação 1000kWh = 15 painéis)
+            const requiredPanels = totalKwh > 0 ? Math.ceil((totalKwh * 15) / 1000) : 0;
+            
+            // Ajustar o kWp para refletir exatamente o número de painéis
+            const adjustedSystemPower = requiredPanels * PANEL_POWER;
+            
+            // Calcular número de inversores (cada inversor suporta até 10kW)
+            const inverterCount = Math.ceil(adjustedSystemPower / 10);
+            
+            // Calcular preço base usando R$ 3.200 por kWp
+            const baseCost = adjustedSystemPower * PRICE_PER_KWP;
+            
+            // Calcular acréscimo dos opcionais (1% para cada)
+            const optionalCount = Object.keys(selectedOptionals).length;
+            const optionalMultiplier = 1 + (optionalCount * 0.01);
+            const estimatedCost = baseCost * optionalMultiplier;
+            
+            // Calcular economia mensal (85% do valor total)
+            const monthlyValue = totalKwh * TARIFF * 0.85;
+            
+            // Calcular custo Fio B (15% do valor total)
+            const monthlyFioB = totalKwh * TARIFF * 0.15;
+            
+            const payback = monthlyValue > 0 ? estimatedCost / (monthlyValue * 12) : 0;
+            const savings25years = (monthlyValue * 12 * 25) - estimatedCost;
+            const roiAnnual = monthlyValue > 0 ? ((monthlyValue * 12) / estimatedCost) * 100 : 0;
+            
+            // Atualizar interface principal
+            document.getElementById('totalKwh').textContent = formatNumber(totalKwh.toFixed(0));
+            document.getElementById('requiredPanels').textContent = requiredPanels;
+            document.getElementById('systemPower').textContent = adjustedSystemPower.toFixed(1);
+            document.getElementById('inverterPower').textContent = inverterCount;
+            document.getElementById('investment').textContent = formatMoney(estimatedCost);
+            
+            document.getElementById('monthlySavings').textContent = formatMoney(monthlyValue);
+            document.getElementById('payback').textContent = payback.toFixed(1);
+            document.getElementById('savings25years').textContent = formatMoney(Math.max(0, savings25years));
+            document.getElementById('roi').textContent = `${roiAnnual.toFixed(1)}%`;
+            
+            // Calcular opção de pagamento (apenas à vista)
+            document.getElementById('priceAVista').textContent = formatMoney(estimatedCost);
+            
+            // Calcular análise de custo-benefício com aumento de 9% ao ano
+            calculateCostBenefit(monthlyValue, monthlyFioB, estimatedCost);
+            
+            // Atualizar proposta
+            document.getElementById('propCurrentConsumption').textContent = formatNumber(currentConsumptionKwh);
+            document.getElementById('propEquipmentConsumption').textContent = formatNumber(selectedKwh);
+            document.getElementById('propTotalConsumption').textContent = formatNumber(totalKwh.toFixed(0));
+            
+            document.getElementById('specPanels').textContent = `${requiredPanels}x`;
+            document.getElementById('specPower').textContent = adjustedSystemPower.toFixed(1);
+            document.getElementById('specInverter').textContent = inverterCount;
+            
+            document.getElementById('finalInvestment').textContent = formatMoney(estimatedCost);
+            document.getElementById('finalMonthlySavings').textContent = formatMoney(monthlyValue);
+            document.getElementById('finalPayback').textContent = `${payback.toFixed(1)} anos`;
+            document.getElementById('finalROI').textContent = formatMoney(Math.max(0, savings25years));
+        }
+
+        // Calcular projeção de custo-benefício
+        function calculateCostBenefit(monthlySavings, monthlyFioB, investment) {
+            // Calcular economia com aumento de 9% ao ano
+            const month1 = monthlySavings;
+            const year1 = monthlySavings * 12;
+            
+            // Calcular Fio B com aumento de 9% ao ano
+            const fioBMonth1 = monthlyFioB;
+            const fioBYear1 = monthlyFioB * 12;
+            
+            // Calcular economia em 5 anos (60 meses) com aumento de 9% ao ano
+            let total5Years = 0;
+            let currentMonthly = monthlySavings;
+            
+            for (let month = 1; month <= 60; month++) {
+                // A cada 12 meses, aumenta 9%
+                if (month % 12 === 1 && month > 1) {
+                    currentMonthly *= 1.09;
+                }
+                total5Years += currentMonthly;
+            }
+            
+            // Calcular Fio B em 5 anos (60 meses) com aumento de 9% ao ano
+            let totalFioB5Years = 0;
+            let currentFioBMonthly = monthlyFioB;
+            
+            for (let month = 1; month <= 60; month++) {
+                // A cada 12 meses, aumenta 9%
+                if (month % 12 === 1 && month > 1) {
+                    currentFioBMonthly *= 1.09;
+                }
+                totalFioB5Years += currentFioBMonthly;
+            }
+            
+            // Atualizar valores na análise de custo-benefício
+            document.getElementById('economyMonth1').textContent = formatMoney(month1);
+            document.getElementById('economyYear1').textContent = formatMoney(year1);
+            document.getElementById('economyYear5').textContent = formatMoney(total5Years);
+            
+            // Atualizar valores do Fio B
+            document.getElementById('fioBMonth1').textContent = formatMoney(fioBMonth1);
+            document.getElementById('fioBYear1').textContent = formatMoney(fioBYear1);
+            document.getElementById('fioBYear5').textContent = formatMoney(totalFioB5Years);
+            
+            // Atualizar resumo
+            document.getElementById('summaryMonth1').textContent = formatMoney(month1);
+            document.getElementById('summaryYear1').textContent = formatMoney(year1);
+            document.getElementById('summaryYear5').textContent = formatMoney(total5Years);
+            document.getElementById('summaryFioBYear5').textContent = formatMoney(totalFioB5Years);
+            document.getElementById('summaryPayback').textContent = `${calculatePayback(monthlySavings, investment)} anos`;
+        }
+
+        // Calcular payback considerando aumento anual de 9% na tarifa
+        function calculatePayback(monthlySavings, investment) {
+            if (monthlySavings <= 0) return 0;
+            
+            let months = 0;
+            let accumulated = 0;
+            let currentMonthly = monthlySavings;
+            
+            while (accumulated < investment && months < 120) { // Máximo de 10 anos
+                months++;
+                accumulated += currentMonthly;
+                
+                // A cada 12 meses, aumenta 9%
+                if (months % 12 === 0) {
+                    currentMonthly *= 1.09;
+                }
+            }
+            
+            return (months / 12).toFixed(1);
+        }
+
+        // Atualizar dados do cliente na proposta
+        function updateProposal() {
+            document.getElementById('propClientName').textContent = 
+                document.getElementById('clientName').value || '-';
+            document.getElementById('propClientPhone').textContent = 
+                document.getElementById('clientPhone').value || '-';
+            document.getElementById('propClientEmail').textContent = 
+                document.getElementById('clientEmail').value || '-';
+            document.getElementById('propClientCity').textContent = 
+                document.getElementById('clientCity').value || '-';
+        }
+
+        // Salvar proposta (simulação)
+        function saveProposal() {
+            alert('Funcionalidade de salvar proposta em desenvolvimento!\nEm uma implementação real, isso salvaria a proposta como PDF.');
+        }
+
+        // Compartilhar proposta (simulação)
+        function shareProposal() {
+            alert('Funcionalidade de compartilhar proposta em desenvolvimento!\nEm uma implementação real, isso permitiria compartilhar a proposta por e-mail ou redes sociais.');
+        }
+
+        // Inicializar a calculadora
+        window.onload = function() {
+            updateIrradiation();
+            calculateAll();
+        };
+    </script>
+</body>
+</html>
